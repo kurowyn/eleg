@@ -15,12 +15,12 @@
 #define ERR_HANDLE(err_cond, err_msg, err_code, ...) \
     if (err_cond) { \
         fprintf(stderr, err_msg, __VA_ARGS__); \
-    exit(err_code); \
+        exit(err_code); \
     } \
 
 enum {WORD_FOUND = 0,
-     WORD_NOT_FOUND = 1,
-  FILE_NOT_FOUND = 2};
+      WORD_NOT_FOUND = 1,
+      FILE_NOT_FOUND = 2};
 
 char *
 dynamic_read(const char *filename){
@@ -126,15 +126,15 @@ int main(int argc, char **argv){
             switch (WEXITSTATUS(child_status)) {
                 case WORD_FOUND:
                     printf("Word %s found in %s.\n",
-                    word, argv[i + 2]);
+                           word, argv[i + 2]);
                     break;
                 case WORD_NOT_FOUND:
                     printf("Word %s not found in %s.\n",
-                    word, argv[i + 2]);
+                           word, argv[i + 2]);
                     break;
                 case FILE_NOT_FOUND:
                     printf("ERROR: %s: no such file.\n",
-                    argv[i + 2]);
+                           argv[i + 2]);
                     break;
                 default:
                     fprintf(stderr, 
