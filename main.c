@@ -5,11 +5,11 @@
 #include <wait.h>
 #include <errno.h>
 
-#define KURO_VERSION
-//#define PROJECT_VERSION
+#define DYNAMIC_READ
+//#define STATIC_READ
 
-#if defined(PROJECT_VERSION)
-#define MAX_BUFFER_LEN 1024
+#if defined(STATIC_READ)
+    #define MAX_BUFFER_LEN 1024
 #endif
 
 #define ERR_HANDLE(err_cond, err_msg, err_code, ...) \
@@ -68,7 +68,7 @@ dynamic_read(const char *filename){
 
 int 
 search_file(const char *filename, const char *token){
-#if defined(KURO_VERSION)
+#if defined(DYNAMIC_READ)
     char *buffer = dynamic_read(filename);
 
     int found = strstr(buffer, token) != NULL ? WORD_FOUND : WORD_NOT_FOUND;
@@ -76,7 +76,7 @@ search_file(const char *filename, const char *token){
     free(buffer);
 
     return found;
-#elif defined(PROJECT_VERSION)
+#elif defined(STATIC_READ)
     FILE *f = fopen(filename, "r");
 
     ERR_HANDLE(f == NULL,
@@ -108,21 +108,25 @@ int main(int argc, char **argv){
 
     // Now, we make the processes.
 
-    for (int i = 0; i < file_count; ++i) {
+    for (size_t i = 0; i < file_count; ++i) {
         if (fork() == 0) {
             // We're at the child process now.
             // We look for the word in the ith process.
             // We then exit appropriately.
+            // Note: it may not be as clear, but search_file()
+            // handles abnormal exit codes other than WORD_FOUND and
+            // WORD_NOT_FOUND, so the exit code can be something other
+            // than those two in case something weird happens.
             exit(search_file(argv[i + 2], word) == WORD_FOUND ?
                  WORD_FOUND : WORD_NOT_FOUND);
         }
     }
 
-    for (int i = 0; i < file_count; ++i) {
+    for (size_t i = 0; i < file_count; ++i) {
         int child_status;
         wait(&child_status);
         if (WIFEXITED(child_status)) {
-        // I hear switches are much faster than ifs.
+            // I hear switches are much faster than ifs.
             switch (WEXITSTATUS(child_status)) {
                 case WORD_FOUND:
                     printf("Word %s found in %s.\n",
