@@ -1,2 +1,2 @@
 # eleg
-Elementary implementation of grep in the C programming language
+Elementary implementation of grep in the C programming language.
