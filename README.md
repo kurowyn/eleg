@@ -1,6 +1,12 @@
 # eleg
 Elementary implementation of grep in the C programming language.
 
+# Usage
+```
+make -B
+./eleg
+```
+
 # Recent Changes
 - Fixed a bug where words are reported to not be in a file, even when they are.
 - Fixed a bug where files are reported to not exist, even when they do.
