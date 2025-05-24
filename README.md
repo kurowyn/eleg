@@ -7,6 +7,6 @@ Elementary implementation of grep in the C programming language.
 - Fixed a bug where the availability of a word for each given file is shown in an arbitrary order (the order of file arguments is now followed).
 
 # Future Plans
-- Make a more user friendly interface
-- Show the line in which the word is found, if any
+- Make a more user friendly interface.
+- Show the line in which the word is found, if any.
 - Write documentation.
