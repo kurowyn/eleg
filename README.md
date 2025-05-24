@@ -1,11 +1,15 @@
 # eleg
 Elementary implementation of grep in the C programming language (thus the name, *eleg*).
 
-# Usage Examples
+# Build
 ```
 $ git clone https://github.com/kurowyn/eleg -b eleg-version-0.2
 $ cd eleg
 $ make -B eleg
+```
+
+# Usage Examples
+```
 $ ./eleg
 $ usage: ./eleg (word) (FILE(s))
 $ ./eleg main main.c
