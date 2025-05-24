@@ -3,6 +3,8 @@ Elementary implementation of grep in the C programming language (thus the name, 
 
 # Usage Examples
 ```
+$ git clone -b eleg-version-0.2
+$ cd eleg
 $ make -B eleg
 $ ./eleg
 $ usage: ./eleg (word) (FILE(s))
