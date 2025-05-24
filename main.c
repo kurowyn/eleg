@@ -2,6 +2,7 @@
 
 // Putting this in a different file can make things a little too abstracted,
 // so it's here directly.
+#define PROGRAM_NAME argv[0]
 #define TARGET_WORD argv[1]
 #define FILE_COUNT argc - 2
 #define FILE_LIST argv + 2
@@ -9,7 +10,7 @@
 int 
 main(int argc, char **argv){
     if (argc < MIN_ARG_COUNT) {
-        fprintf(stderr, "usage: ./a.out (word) (FILE(s))");
+        fprintf(stderr, "usage: %s (word) (FILE(s))", PROGRAM_NAME);
         exit(EXIT_FAILURE);
     }
 
