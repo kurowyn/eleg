@@ -1,69 +1,65 @@
 #include "utils.h"
 
+// Putting this in a different file can make things a little too abstracted,
+// so it's here directly.
+#define TARGET_WORD argv[1]
+#define FILE_COUNT argc - 2
+#define FILE_LIST argv + 2
+
 int main(int argc, char **argv){
-    int file_count = argc - 2;
-
-    int *file_statuses = mmap(NULL, 
-                              file_count * sizeof(int),
-                              PROT_READ | PROT_WRITE, 
-                              MAP_SHARED | MAP_ANONYMOUS,
-                              -1,
-                              0);
-
-    for (int i = 0; i < file_count; ++i)
-        file_statuses[i] = -1;
-
-    char **files = argv + 2;
-
-    char *word = argv[1];
-
-    if (argc < 3) {
+    if (argc < MIN_ARG_COUNT) {
         fprintf(stderr, "usage: ./a.out (word) (FILE(s))");
         exit(EXIT_FAILURE);
     }
 
-    // Now, we make the processes.
+    FileStatus *FileStatusList = FileStatusListInit(FILE_LIST, FILE_COUNT); 
 
-    for (size_t i = 0; i < file_count; ++i) {
-        int fork_val = fork();
+    // Now, we make the processes.
+    for (size_t i = 0; i < FILE_COUNT; ++i) {
+        pid_t fork_val = fork();
         ERR_HANDLE(fork_val == -1,
                    "ERROR: could not fork process; errno: %d",
                    exit(errno),
                    errno);
         if (fork_val == 0) {
-            // The search_file function now returns an exit code,
+            // The search_file function now returns the exit code,
             // instead of the function(s) itself (themselves) exiting.
             // This is still safe.
-            file_statuses[i] = search_file(files[i], word);
-            exit(file_statuses[i]);
-        } 
+            // Yes, this code is what it looks like.
+            exit(FileStatusList[i].status = search_file(FileStatusList[i].name,
+                                                        TARGET_WORD));
+        }
     }
 
-    for (size_t i = 0; i < file_count; ++i) {
-        int child_status;
-        wait(&child_status);
+    // This is so that the parent doesn't act while a child process is still
+    // running. The status list analysis begins only after all the children
+    // terminate. Check the manpage for more info.
+    while (wait(NULL) >= 0);
 
-        if (WIFEXITED(child_status)) {
-            switch (file_statuses[i]) {
-                case WORD_FOUND:
-                    printf("%d %s: %s found.\n",
-                           i + 1, files[i], word);
-                    break;
-                case WORD_NOT_FOUND:
-                    printf("%d %s: %s not found.\n",
-                           i + 1, files[i], word);
-                    break;
-                case FILE_NOT_FOUND:
-                    printf("%d %s: no such file.\n",
-                           i + 1, files[i]);
-                    break;
-                default:
-                    fprintf(stderr, 
-                            "ERROR: unknown error occured (exit statuses: %d, %d).\n"
-                            "Contact your system adminstrator.\n",
-                            file_statuses[i], WEXITSTATUS(child_status));
-                    break;
-            }
+    for (size_t i = 0; i < FILE_COUNT; ++i) {
+        switch (FileStatusList[i].status) {
+            case WORD_FOUND:
+                printf("%d %s: %s found.\n",
+                       i + 1, FileStatusList[i].name, TARGET_WORD);
+                break;
+            case WORD_NOT_FOUND:
+                printf("%d %s: %s not found.\n",
+                       i + 1, FileStatusList[i].name, TARGET_WORD);
+                break;
+            case FILE_NOT_FOUND:
+                printf("%d %s: no such file.\n",
+                       i + 1, FileStatusList[i].name);
+                break;
+            default:
+                // Under normal circumstances, this should not happen,
+                // except if search_file() returns an unordinary exit code.
+                // (which means, practically speaking, it shouldn't 
+                // ever occur). 
+                fprintf(stderr, "ERROR: unkown error occurred.\n"
+                                "File status: %d, errno: %d.\n"
+                                "Contact your system adminstrator.\n",
+                                FileStatusList[i].status, errno);
+                break;
         }
     }
 
