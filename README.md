@@ -13,8 +13,12 @@ $ 1 main.c: main found.
 $ ./eleg main main.c doesntexist
 $ 1 main.c: main found.
 $ 2 doesntexist: no such file.
+$ ./eleg MAIN main.c doesntexist utils.c
+$ 1 main.c: MAIN not found.
+$ 2 doesntexist: no such file.
+$ 3 utils.c: MAIN not found.
 ```
-Note that in the the example above, *doesntexist* is assumed to be a file that doesn't actually exist.
+Note that in the examples above, *doesntexist* is assumed to be a file that doesn't actually exist.
 
 # Recent Changes
 - Fixed a bug where words are reported to not be in a file, even when they are.
