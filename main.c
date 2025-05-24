@@ -32,7 +32,7 @@ int main(int argc, char **argv){
                    errno);
         if (fork_val == 0) {
             // The search_file function now returns an exit code,
-            // instead of the function itself exiting.
+            // instead of the function(s) itself (themselves) exiting.
             // This is still safe.
             file_statuses[i] = search_file(files[i], word);
             exit(file_statuses[i]);
