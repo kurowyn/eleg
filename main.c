@@ -7,8 +7,32 @@
 #define FILE_COUNT argc - 2
 #define FILE_LIST argv + 2
 
-int 
-main(int argc, char **argv){
+// foz
+void help(){
+
+    printf("Usage: eleg [OPTION]... WORD [FILE]... \n\n");
+    printf("Elementary implementation of grep in the C programming language (thus the name, eleg).\n\n");
+    printf("Options:\n");
+    printf("  -h, --help\tshow help\n\n");
+
+
+}
+
+// end foz
+
+int  main(int argc, char **argv){
+
+    //foz
+    
+    if (argc > 1 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)) {
+        help();
+        return EXIT_SUCCESS;
+    }
+
+
+    // end foz
+
+
     if (argc < MIN_ARG_COUNT) {
         fprintf(stderr, "usage: %s (word) (FILE(s))", PROGRAM_NAME);
         exit(EXIT_FAILURE);
@@ -28,8 +52,7 @@ main(int argc, char **argv){
             // instead of the function(s) itself (themselves) exiting.
             // This is still safe.
             // Yes, this code is what it looks like.
-            exit(FileStatusList[i].status = search_file(FileStatusList[i].name,
-                                                        TARGET_WORD));
+            exit(FileStatusList[i].status = search_file(FileStatusList[i].name,TARGET_WORD));
         }
     }
 
@@ -67,3 +90,4 @@ main(int argc, char **argv){
 
     return EXIT_SUCCESS;
 }
+
