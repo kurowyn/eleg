@@ -3,7 +3,7 @@ Elementary implementation of grep in the C programming language (thus the name, 
 
 # Build
 ```
-$ git clone https://github.com/kurowyn/eleg -b eleg-version-0.2
+$ git clone https://github.com/kurowyn/eleg -b eleg-version-0.3
 $ cd eleg
 $ make -B eleg
 ```
