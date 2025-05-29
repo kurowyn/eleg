@@ -23,9 +23,9 @@ ParseArgList(int *argc, char **argv){
         option_arg = parsed_argv[1];
 
         if (STR_EQ(option_arg, "-c")) {
-            // ./eleg -c A B ... 
             if (parsed_argc < 4) { 
                 UsageMessage();
+            // ./eleg -c A B ... 
             } else {
                 parsed_argc = parsed_argc - 2;
 
@@ -40,13 +40,17 @@ ParseArgList(int *argc, char **argv){
                 *argc = parsed_argc;
                 return parsed_argv + 2;
             } else {
-                _g_malloc_used = 1;
                 fprintf(stdout, "Press enter on an empty input to end input.\n");
+
+                // We allocate memory for our new arg list.
                 parsed_argv = malloc(sizeof (char *));
                 ERR_HANDLE(parsed_argv == NULL,
                            "ERROR: could not allocate memory, errno: %d\n",
                            exit(errno),
                            errno);
+
+                _g_malloc_used = 1;
+                
                 // ./eleg -i A (only)
                 if (parsed_argc == 3) {
                     strcpy(target_arg, argv[2]);
@@ -64,7 +68,10 @@ ParseArgList(int *argc, char **argv){
                            exit(errno),
                            errno);
                 strcpy(parsed_argv[0], target_arg);
+                // We appeneded the target word to our newly created list.
+                // We update its length accordingly.
                 parsed_argc = 1;
+
                 while (1) {
                     STRING_INPUT("File %d: ", buffer, 0, parsed_argc);
 
@@ -102,9 +109,9 @@ ParseArgList(int *argc, char **argv){
         } else if (STR_EQ(option_arg, "-v") || STR_EQ(option_arg, "--version")) {
             VersionMessage();
         } else if (option_arg[0] != '-') {
-            // ./eleg A B ...
             if (parsed_argc < 3) {
                 UsageMessage();
+            // ./eleg A B ...
             } else {
                 parsed_argc = parsed_argc - 1;
 
