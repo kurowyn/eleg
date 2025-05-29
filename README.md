@@ -9,9 +9,15 @@ $ make -B eleg
 ```
 
 # Usage Examples
+TODO: update this.
 ```
 $ ./eleg
-$ usage: ./eleg (word) (FILE(s))
+$ usage: ./eleg [OPTION] (word) (FILE(s))
+$ OPTION may be one of the following: 
+$ -c: command-line mode (default)
+$ -h: show this help and exit
+$ -i: interactive session
+$ -v | --version: show version and exit
 $ ./eleg main main.c
 $ 1 main.c: main found.
 $ ./eleg main main.c doesntexist
