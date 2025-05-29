@@ -10,6 +10,10 @@
 #include <unistd.h>
 #include <wait.h>
 
+#define EFFECT_BEGIN "\033[31;1;4m"
+#define EFFECT_END "\033[0m"
+// The effect in question is: red foreground, bold and underlined.
+
 // Enough for everyone.
 #define MAX_BUFFER_LEN 4096
 
@@ -23,6 +27,7 @@
         if (err_cond) {err_handle;}
 #endif 
 
+// Not as accurate, but good enough.
 #define malloc_shared(size)  \
         mmap(NULL, \
              size, \
@@ -31,7 +36,7 @@
              -1, \
              0) \
 
-// A wrapper around fgets that makes life easier.
+// A wrapper around fgets that makes life easier, for user input.
 #define STRING_INPUT(prompt_format, string, continue_condition, ...) \
 { \
     do { \
@@ -67,7 +72,5 @@ int FileSearch(const char *file_name, const char *target);
 void FileShowStatusList(const char *target,
                         const FileStatus *file_status_list,
                         const ssize_t file_count);
-
-extern int _g_malloc_used;
 
 #endif // ELEG_H
