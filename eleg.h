@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
-#include <unistd.h>
-#include <sys/wait.h>
 #include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 #define PROGRAM_NAME "./eleg"
 #define FILE_LIST (argv + 1)
@@ -20,6 +20,13 @@
 // The effect in question is: red foreground, bold and underlined.
 #define EFFECT_BEGIN "\033[31;1;4m"
 #define EFFECT_END "\033[0m"
+
+enum {FILE_NO_STATUS = -1,
+      FILE_WORD_FOUND = 0,
+      FILE_WORD_NOT_FOUND = 1,
+      FILE_NOT_FOUND = ENOENT,};
+
+// ENOENT is indeed 2 (in most implementations of errno), but that's hard to see. 
 
 #define STR_EQ(str_1, str_2) (strcmp((str_1), (str_2)) == 0)
 
@@ -61,12 +68,6 @@
     } \
 } \
 
-enum {FILE_NO_STATUS = -1,
-      FILE_WORD_FOUND = 0,
-      FILE_WORD_NOT_FOUND = 1,
-      FILE_NOT_FOUND = ENOENT,};
-// ENOENT is indeed 2 (in most implementations of errno), but that's hard to see. 
-
 typedef struct FileStatus FileStatus;
 struct FileStatus {
     int status; // whether we found the target
@@ -77,6 +78,6 @@ FileStatus *FileStatusListInit(char **file_list, ssize_t file_count);
 int FileSearch(const char *file_name, const char *target);
 void FileShowStatusList(const char *target,
                         const FileStatus *file_status_list,
-                        const ssize_t file_count);
+                        ssize_t file_count);
 
 #endif // ELEG_H
