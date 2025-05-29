@@ -28,6 +28,8 @@ main(int argc, char **argv){
 
     FileShowStatusList(TARGET_WORD, file_status_list, FILE_COUNT);
 
+    // Unmap shared memory, and deallocate allocated stuff (if malloc was used).
+    // _g_malloc_used determines if we deallocate. 
     CLEAN_UP(argv, file_status_list);
 
     return EXIT_SUCCESS;
