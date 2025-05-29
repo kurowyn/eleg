@@ -131,9 +131,9 @@ UsageMessage(void){
     fprintf(stderr, "usage: %s [OPTION] (word) (FILE(s))\n" 
                     "OPTION may be one of the following: \n"
                     "-c: command-line mode (default)\n"
-                    "-h | --help: show this help and exit\n"
+                    "-h, --help: show this help and exit\n"
                     "-i: interactive session\n"
-                    "-v | --version: show version and exit\n",
+                    "-v, --version: show version and exit\n",
                     PROGRAM_NAME);
     exit(EXIT_FAILURE);
 }
