@@ -9,9 +9,7 @@
 #define TARGET_WORD (argv[0])
 
 void UsageMessage(void);
-
 void VersionMessage(void);
-
 char **ParseArgList(int *argc, char **argv);
 
 #endif // PARSEARG_H
