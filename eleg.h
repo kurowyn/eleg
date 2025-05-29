@@ -8,7 +8,8 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <wait.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
 #define PROGRAM_NAME "./eleg"
 #define FILE_LIST (argv + 1)
