@@ -14,6 +14,10 @@
 #define EFFECT_END "\033[0m"
 // The effect in question is: red foreground, bold and underlined.
 
+#define PROGRAM_NAME "./eleg"
+#define FILE_LIST (argv + 1)
+#define FILE_COUNT (argc - 1)
+
 // Enough for everyone.
 #define MAX_BUFFER_LEN 4096
 
