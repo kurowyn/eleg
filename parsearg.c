@@ -104,7 +104,7 @@ ParseArgList(int *argc, char **argv){
                     UsageMessage();
                 }
             }
-        } else if (STR_EQ(option_arg, "-h")) {
+        } else if (STR_EQ(option_arg, "-h") || STR_EQ(option_arg, "--help")) {
             UsageMessage();
         } else if (STR_EQ(option_arg, "-v") || STR_EQ(option_arg, "--version")) {
             VersionMessage();
@@ -131,7 +131,7 @@ UsageMessage(void){
     fprintf(stderr, "usage: %s [OPTION] (word) (FILE(s))\n" 
                     "OPTION may be one of the following: \n"
                     "-c: command-line mode (default)\n"
-                    "-h: show this help and exit\n"
+                    "-h | --help: show this help and exit\n"
                     "-i: interactive session\n"
                     "-v | --version: show version and exit\n",
                     PROGRAM_NAME);
