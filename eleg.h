@@ -10,17 +10,15 @@
 #include <unistd.h>
 #include <wait.h>
 
-#define EFFECT_BEGIN "\033[31;1;4m"
-#define EFFECT_END "\033[0m"
-// The effect in question is: red foreground, bold and underlined.
-
 #define PROGRAM_NAME "./eleg"
 #define FILE_LIST (argv + 1)
 #define FILE_COUNT (argc - 1)
 #define TARGET_WORD (argv[0])
-
-// Enough for everyone.
 #define MAX_BUFFER_LEN 4096
+
+// The effect in question is: red foreground, bold and underlined.
+#define EFFECT_BEGIN "\033[31;1;4m"
+#define EFFECT_END "\033[0m"
 
 #define STR_EQ(str_1, str_2) (strcmp((str_1), (str_2)) == 0)
 
@@ -32,14 +30,14 @@
         if (err_cond) {err_handle;}
 #endif 
 
-// Not as accurate, but good enough.
-#define malloc_shared(size)  \
-        mmap(NULL, \
-             size, \
-             PROT_READ | PROT_WRITE, \
-             MAP_SHARED | MAP_ANONYMOUS, \
-             -1, \
-             0) \
+// Naming not as accurate, but good enough.
+#define malloc_shared(size) \
+    mmap(NULL, \
+         size, \
+         PROT_READ | PROT_WRITE, \
+         MAP_SHARED | MAP_ANONYMOUS, \
+         -1, \
+         0) \
 
 // A wrapper around fgets that makes life easier, for user input.
 #define STRING_INPUT(prompt_format, string, continue_condition, ...) \
@@ -52,6 +50,7 @@
 } \
 
 #define CLEAN_UP(argv, file_status_list) \
+{ \
     munmap(file_status_list, FILE_COUNT * sizeof (FileStatus)); \
     if (_g_malloc_used) { \
         for (ssize_t i = 0; i < argc; ++i) { \
@@ -59,6 +58,7 @@
         } \
         free(argv); \
     } \
+} \
 
 enum {FILE_NO_STATUS = -1,
       FILE_WORD_FOUND = 0,
