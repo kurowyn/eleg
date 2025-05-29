@@ -19,14 +19,14 @@ $ -h: show this help and exit
 $ -i: interactive session
 $ -v | --version: show version and exit
 $ ./eleg main main.c
-$ 1 main.c: main found.
+$ @1 main.c: main found.
 $ ./eleg main main.c doesntexist
-$ 1 main.c: main found.
-$ 2 doesntexist: no such file.
+$ @1 main.c: main found.
+$ @2 doesntexist: no such file.
 $ ./eleg MAIN main.c doesntexist utils.c
-$ 1 main.c: MAIN not found.
-$ 2 doesntexist: no such file.
-$ 3 utils.c: MAIN not found.
+$ @1 main.c: MAIN not found.
+$ @2 doesntexist: no such file.
+$ @3 utils.c: MAIN not found.
 ```
 Note that in the examples above, *doesntexist* is assumed to be a file that doesn't actually exist.
 
