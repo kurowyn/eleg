@@ -26,11 +26,13 @@ FileShowStatusList(const char *target,
     for (ssize_t i = 0; i < file_count; ++i) {
         switch (file_status_list[i].status) {
             case FILE_WORD_FOUND:
-                fprintf(stdout, "@%d: %s: %s found.\n", 
+                fprintf(stdout, "@%d: %s: " EFFECT_BEGIN "%s" EFFECT_END 
+                        " found.\n", 
                         i + 1, file_status_list[i].name, target);
                 break;
             case FILE_WORD_NOT_FOUND:
-                fprintf(stdout, "@%d: %s: %s not found.\n", 
+                fprintf(stdout, "@%d: %s: " EFFECT_BEGIN "%s" EFFECT_END 
+                        " not found.\n", 
                         i + 1, file_status_list[i].name, target);
                 break;
             case FILE_NOT_FOUND:
