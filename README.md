@@ -33,7 +33,9 @@ Note that in the examples above, *doesntexist* is assumed to be a file that does
 # Recent Changes
 - Fixed a bug where words are reported to not be in a file, even when they are.
 - Fixed a bug where files are reported to not exist, even when they do.
-- Fixed a bug where the availability of a word for each given file is shown in an arbitrary order (the order of the given file arguments is now followed).
+- Fixed a bug where the availability of a word for each given file is shown in an arbitrary order (the
+order of the given file arguments is now followed).
+- Added several command line options.
 
 # Future Plans
 - Refactor code even more.
