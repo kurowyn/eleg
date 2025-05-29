@@ -1,8 +1,6 @@
 #ifndef ELEG_H
 #define ELEG_H
 
-extern int _g_malloc_used;
-
 #include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
