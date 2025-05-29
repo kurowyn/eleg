@@ -1,67 +1,82 @@
-#include "eleg.h" 
+#ifndef ELEG_H
+#define ELEG_H
 
-int
-FileSearch(const char *file_name, const char *target){
-    char buffer[MAX_BUFFER_LEN];
-    FILE *f = fopen(file_name, "r");
+#include <errno.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
-    ERR_HANDLE(f == NULL,
-               "ERROR: could not open file %s, errno: %d\n",
-               return errno,
-               file_name, errno);
+#define PROGRAM_NAME "./eleg"
+#define FILE_LIST (argv + 1)
+#define FILE_COUNT (argc - 1)
+#define TARGET_WORD (argv[0])
+#define MAX_BUFFER_LEN 4096
 
-    while (fgets(buffer, MAX_BUFFER_LEN, f)) {
-        if (buffer && strstr(buffer, target)) {
-            return FILE_WORD_FOUND;
-        }
-    }
-    
-    return FILE_WORD_NOT_FOUND;
-}
+// The effect in question is: red foreground, bold and underlined.
+#define EFFECT_BEGIN "\033[31;1;4m"
+#define EFFECT_END "\033[0m"
 
-void
-FileShowStatusList(const char *target, 
-                   const FileStatus *file_status_list, 
-                   const ssize_t file_count){
-    for (ssize_t i = 0; i < file_count; ++i) {
-        switch (file_status_list[i].status) {
-            case FILE_WORD_FOUND:
-                fprintf(stdout, "@%d: %s: " EFFECT_BEGIN "%s" EFFECT_END 
-                        " found.\n", 
-                        i + 1, file_status_list[i].name, target);
-                break;
-            case FILE_WORD_NOT_FOUND:
-                fprintf(stdout, "@%d: %s: " EFFECT_BEGIN "%s" EFFECT_END 
-                        " not found.\n", 
-                        i + 1, file_status_list[i].name, target);
-                break;
-            case FILE_NOT_FOUND:
-                fprintf(stdout, "@%d: %s: no such file.\n",
-                        i + 1, file_status_list[i].name);
-                break;
-            default:
-                fprintf(stderr, "ERROR: unkown error occurred.\n"
-                                "File status: %d, errno: %d.\n"
-                                "Contact your system adminstrator.\n",
-                                file_status_list[i].status, errno);
-                break;
-        }
-    }
-}
+#define STR_EQ(str_1, str_2) (strcmp((str_1), (str_2)) == 0)
 
-FileStatus *
-FileStatusListInit(char **file_list, ssize_t file_count){
-    FileStatus *file_status_list = malloc_shared(file_count * sizeof (FileStatus));
+#if defined(VERBOSE_ERR_HANDLE) 
+    #define ERR_HANDLE(err_cond, err_msg, err_handle, ...) \
+        if (err_cond) {fprintf(stderr, (err_msg), __VA_ARGS__); err_handle;}
+#elif !defined(VERBOSE_ERR_HANDLE) || defined(SILENT_ERR_HANDLE)
+    #define ERR_HANDLE(err_cond, err_msg, err_handle, ...) \
+        if (err_cond) {err_handle;}
+#endif 
 
-    ERR_HANDLE(file_status_list == MAP_FAILED,
-               "ERROR: could not mmap, errno: %d\n",
-               exit(errno),
-               errno); 
+// Naming not as accurate, but good enough.
+#define malloc_shared(size) \
+    mmap(NULL, \
+         size, \
+         PROT_READ | PROT_WRITE, \
+         MAP_SHARED | MAP_ANONYMOUS, \
+         -1, \
+         0) \
 
-    for (ssize_t i = 0; i < file_count; ++i) {
-        file_status_list[i] = (FileStatus){.name = file_list[i],
-                                           .status = FILE_NO_STATUS};
-    }
+// A wrapper around fgets that makes life easier, for user input.
+#define STRING_INPUT(prompt_format, string, continue_condition, ...) \
+{ \
+    do { \
+        printf(prompt_format, __VA_ARGS__); \
+        fgets(string, MAX_BUFFER_LEN, stdin); \
+    } while ((continue_condition)); \
+    if (string[strlen(string) - 1] == '\n' && (string[strlen(string) - 1] = '\0')); \
+} \
 
-    return file_status_list;
-}
+#define CLEAN_UP(argv, file_status_list) \
+{ \
+    munmap(file_status_list, FILE_COUNT * sizeof (FileStatus)); \
+    if (_g_malloc_used) { \
+        for (ssize_t i = 0; i < argc; ++i) { \
+            free(argv[i]); \
+        } \
+        free(argv); \
+    } \
+} \
+
+enum {FILE_NO_STATUS = -1,
+      FILE_WORD_FOUND = 0,
+      FILE_WORD_NOT_FOUND = 1,
+      FILE_NOT_FOUND = ENOENT,};
+// ENOENT is indeed 2 (in most implementations of errno), but that's hard to see. 
+
+typedef struct FileStatus FileStatus;
+struct FileStatus {
+    int status; // whether we found the target
+    char *name; // name of the file
+};
+
+FileStatus *FileStatusListInit(char **file_list, ssize_t file_count);
+int FileSearch(const char *file_name, const char *target);
+void FileShowStatusList(const char *target,
+                        const FileStatus *file_status_list,
+                        const ssize_t file_count);
+
+#endif // ELEG_H
