@@ -37,6 +37,5 @@ Note that in the examples above, *doesntexist* is assumed to be a file that does
 
 # Future Plans
 - Refactor code even more.
-- Make a more user friendly interface.
 - Show the line in which the word is found, if any.
 - Write documentation.
