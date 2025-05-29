@@ -68,4 +68,6 @@ void FileShowStatusList(const char *target,
                         const FileStatus *file_status_list,
                         const ssize_t file_count);
 
+extern int _g_malloc_used;
+
 #endif // ELEG_H
