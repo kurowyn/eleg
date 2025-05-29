@@ -1,7 +1,7 @@
 #ifndef PARSEARG_H
 #define PARSEARG_H
 
-#include "utils.h"
+#include "eleg.h"
 
 void UsageMessage(void);
 void VersionMessage(void);
